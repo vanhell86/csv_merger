@@ -1,7 +1,7 @@
-<hi>csv_merger</h1>
+# csv_merger #
 For merging multiple csv files into one
 
-    ### Installation
+    ### Installation ###
 
     git clone https://github.com/vanhell86/csv_merger.git
     cd projectname
