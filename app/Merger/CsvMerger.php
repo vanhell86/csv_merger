@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Merger;
 
-class CsvMerger
+class CsvMerger implements MergerInterface
 {
     private $finalCsvHeader = [];
     private $finalCsvData = [];
@@ -14,37 +14,38 @@ class CsvMerger
         $this->fileNames = $fileNames;
     }
 
-    public function merge()
+    public function merge(): array  // method for merging csv files
     {
         foreach ($this->fileNames as $csvFile) {
-            $reader = new CsvReader($csvFile);
+            $reader = read($csvFile);  //creating Csvreader instance and passing file to read
 
             foreach ($reader->read() as $key => $item) {
+                // getting header with unique values
                 $this->setFinalCsvHeader(array_unique(array_merge($this->getFinalCsvHeader(),
                     $reader::$headers)));
-                $record = array_combine(CsvReader::$headers, $item);
-                $this->setFinalCsvData($record);
+                $record = array_combine($reader::$headers, $item);  // creating key => value pairs
+                $this->setFinalCsvData($record); // collecting all csv data to array
             }
         }
 
-        $this->setFinalCsv($this->getFinalCsvHeader());
-        foreach ($this->getFinalCsvData() as $data) {
+        $this->setFinalCsv($this->getFinalCsvHeader()); //adding header to finalCsv array
+        foreach ($this->getFinalCsvData() as $data) {   // looping through all collected csv data
 
             $row = [];
             $value = "''";
-            foreach ($this->getFinalCsvHeader() as $column) {
-//                $value = ($data[$column] ? $data[$column] : "''");
-                if (isset($data[$column])) {
+            foreach ($this->getFinalCsvHeader() as $column) { // looping through header columns and checking
+                if (isset($data[$column])) {                  // if there is such data, if not adding empty string
                     $value = $data[$column];
                 }
                 $row[] = $value;
                 $value = "''";
             }
-            $this->setFinalCsv($row);
+            $this->setFinalCsv($row);   // adding data to finalCsv array
         }
         return $this->getFinalCsv();
     }
 
+//    setting getters and setters for class properties
     public function getFinalCsvHeader(): array
     {
         return $this->finalCsvHeader;
