@@ -27,7 +27,6 @@ class CsvMerger implements MergerInterface
                 $this->setFinalCsvData($record); // collecting all csv data to array
             }
         }
-
         $this->setFinalCsv($this->getFinalCsvHeader()); //adding header to finalCsv array
         foreach ($this->getFinalCsvData() as $data) {   // looping through all collected csv data
 
